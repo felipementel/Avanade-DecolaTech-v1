@@ -1,12 +1,17 @@
+using Avanade.Aquitetura.DecolaDev.Domain.Entidades;
+using Avanade.Aquitetura.DecolaDev.Domain.Interfaces;
+using Avanade.Aquitetura.DecolaDev.Infra.Database;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Avanade.Aquitetura.DecolaDev.API
 {
+    [ExcludeFromCodeCoverage]
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -25,6 +30,12 @@ namespace Avanade.Aquitetura.DecolaDev.API
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Avanade.Aquitetura.DecolaDev.API", Version = "v1" });
             });
+
+            //AddScoped - dentro de um escopo, retorna um objeto
+            //AddSingleton - uma instancia no processo
+            //AddTransient - uma nova a cada requisicao
+
+            services.AddSingleton<IRepositorio<Pessoa>, PessoaRepositorio>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

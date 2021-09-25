@@ -1,56 +1,58 @@
-﻿using System;
+﻿using Avanade.Aquitetura.DecolaDev.Domain.Entidades;
+using Avanade.Aquitetura.DecolaDev.Domain.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Avanade.Aquitetura.DecolaDev.Infra.Database
 {
-    public class PessoaRepositorio
+    public class PessoaRepositorio : IRepositorio<Pessoa>
     {
-        private readonly string _connMongo;
-        private readonly string _databaseMongo;
-
-        static List<Domain.Entidades.Pessoa> banco = new List<Domain.Entidades.Pessoa>();
+        List<Domain.Entidades.Pessoa> _banco;
 
         public PessoaRepositorio()
         {
-
+            _banco = new List<Domain.Entidades.Pessoa>();
         }
 
-        public IEnumerable<Domain.Entidades.Pessoa> Listar()
+        public void Atualizar(int id, Pessoa entidade)
         {
-            return banco.ToList();
-        }
-
-        public Domain.Entidades.Pessoa ObterPorId(int idPessoa)
-        {
-            return banco.FirstOrDefault(p => p.Id == idPessoa);
-        }
-
-        public void CadastrarPessoa(Domain.Entidades.Pessoa pessoa)
-        {
-            banco.Add(pessoa);
-        }
-
-        public void AtualizarPessoa(int idPessoa, Domain.Entidades.Pessoa pessoa)
-        {
-            var item = banco.FirstOrDefault(p => p.Id == idPessoa);
+            var item = _banco.FirstOrDefault(p => p.Id == id);
 
             if (item is not null)
             {
-                item.Nascimento = pessoa.Nascimento;
-                item.NomeCompleto = pessoa.NomeCompleto;
-                item.Salario = pessoa.Salario;
-                item.Trem = pessoa.Trem;
+                item.Nascimento = entidade.Nascimento;
+                item.NomeCompleto = entidade.NomeCompleto;
+                item.Salario = entidade.Salario;
+                item.Trem = entidade.Trem;
             }
             else
             {
-                throw new Exception($"Pessoa id {idPessoa} não existe na base de dados");
+                throw new Exception($"Entidade id {id} não existe na base de dados");
             }
         }
 
-        public void DeletarPessoa(int idPessoa)
+        public void Cadastrar(Pessoa entidade)
         {
-            banco.Remove(banco.FirstOrDefault(p => p.Id == idPessoa));
+            _banco.Add(entidade);
+        }
+
+        public void Deletar(int id)
+        {
+            _banco.Remove(_banco.FirstOrDefault(p => p.Id == id));
+        }
+
+        public IEnumerable<Pessoa> Listar()
+        {
+            return _banco.ToList();
+        }
+
+        public Pessoa ObterPorId(int id)
+        {
+            return _banco.FirstOrDefault(p => p.Id == id);
+
+            //TODO: Criar o teste de unidade para o repositorio
+            //throw new Exception();
         }
     }
 }

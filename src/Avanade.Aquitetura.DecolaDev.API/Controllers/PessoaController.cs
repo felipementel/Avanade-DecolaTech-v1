@@ -1,4 +1,6 @@
-﻿using Avanade.Aquitetura.DecolaDev.Infra.Database;
+﻿using Avanade.Aquitetura.DecolaDev.Domain.Entidades;
+using Avanade.Aquitetura.DecolaDev.Domain.Interfaces;
+using Avanade.Aquitetura.DecolaDev.Infra.Database;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
@@ -11,49 +13,44 @@ namespace Avanade.Aquitetura.DecolaDev.API.Controllers
     {
         private readonly ILogger<PessoaController> _logger;
 
-        public PessoaController(ILogger<PessoaController> logger)
+        private readonly IRepositorio<Pessoa> _repositorio;
+
+        public PessoaController(
+            ILogger<PessoaController> logger,
+            IRepositorio<Pessoa> repositorio)
         {
             _logger = logger;
+            _repositorio = repositorio;
         }
 
         [HttpGet]
         public IEnumerable<Domain.Entidades.Pessoa> Obter()
         {
-            PessoaRepositorio pessoaRepositorio = new PessoaRepositorio();
-
-            return pessoaRepositorio.Listar();
+            return _repositorio.Listar();
         }
 
         [HttpGet("{id}")]
         public Domain.Entidades.Pessoa ObterPorId([FromRoute] int id)
         {
-            PessoaRepositorio pessoaRepositorio = new PessoaRepositorio();
-
-            return pessoaRepositorio.ObterPorId(id);
+            return _repositorio.ObterPorId(id);
         }
 
         [HttpPost()]
         public void CadastrarPessoa([FromBody] Domain.Entidades.Pessoa pessoa)
         {
-            PessoaRepositorio pessoaRepositorio = new PessoaRepositorio();
-
-            pessoaRepositorio.CadastrarPessoa(pessoa);
+            _repositorio.Cadastrar(pessoa);
         }
 
         [HttpPut("{id}")]
         public void AtualizarPessoa([FromRoute] int id, [FromBody] Domain.Entidades.Pessoa pessoa)
         {
-            PessoaRepositorio pessoaRepositorio = new PessoaRepositorio();
-
-            pessoaRepositorio.AtualizarPessoa(id, pessoa);
+            _repositorio.Atualizar(id, pessoa);
         }
 
         [HttpDelete("{id}")]
         public void DeletarPessoa([FromRoute] int id)
         {
-            PessoaRepositorio pessoaRepositorio = new PessoaRepositorio();
-
-            pessoaRepositorio.DeletarPessoa(id);
+            _repositorio.Deletar(id);
         }
     }
 }
